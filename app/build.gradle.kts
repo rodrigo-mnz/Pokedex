@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.coil)
+    implementation(libs.androidx.paging.compose)
 
     testImplementation(libs.junit)
 

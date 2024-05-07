@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -24,16 +23,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.pokedex.R
 import com.example.pokedex.extensions.findColorFromType
 import com.example.pokedex.ui.model.PokemonUIModel
 import org.koin.androidx.compose.koinViewModel
 
-
+// TODO: Previews
 @Composable
 internal fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
@@ -41,11 +43,14 @@ internal fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val lazyPagingItems: LazyPagingItems<PokemonUIModel> =
+        viewModel.pokemonList.collectAsLazyPagingItems()
+
     LaunchedEffect(key1 = true) {
-        viewModel.fetchPokemonList()
+        viewModel.fetchFirstPage()
     }
 
-    when (val value = uiState) {
+    when (uiState) {
         is HomeUiState.Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 Text(
@@ -62,14 +67,14 @@ internal fun HomeScreen(
         }
 
         is HomeUiState.Success -> {
-            HomeContent(value.list, onPokemonSelected)
+            HomeContent(lazyPagingItems, onPokemonSelected)
         }
     }
 }
 
 @Composable
 private fun HomeContent(
-    data: List<PokemonUIModel>,
+    lazyPagingItems: LazyPagingItems<PokemonUIModel>,
     onPokemonSelected: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -80,7 +85,9 @@ private fun HomeContent(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(data) { pokemon ->
+            items(lazyPagingItems.itemCount) { index ->
+                val pokemon = lazyPagingItems[index] ?: return@items
+
                 Column(
                     modifier = Modifier.clickable {
                         onPokemonSelected.invoke(pokemon.name)
@@ -94,6 +101,7 @@ private fun HomeContent(
                     ) {
                         AsyncImage(
                             model = pokemon.image,
+                            placeholder = painterResource(id = R.drawable.placeholder),
                             contentDescription = "${pokemon.name}'s image"
                         )
                     }
