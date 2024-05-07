@@ -1,7 +1,6 @@
 package com.example.pokedex.network.model
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.Serializable
 
 data class PokemonDetail(
     @SerializedName("id")
@@ -9,7 +8,9 @@ data class PokemonDetail(
     @SerializedName("name")
     val name: String,
     @SerializedName("sprites")
-    val sprites: Sprites
+    val sprites: Sprites,
+    @SerializedName("types")
+    val types: List<Types>
 )
 
 data class Sprites(
@@ -25,5 +26,17 @@ data class Other(
 class OfficialArtwork(
     @SerializedName("front_default")
     val frontDefault: String
+)
+
+class Types(
+    @SerializedName("slot")
+    val slot: Int,
+    @SerializedName("type")
+    val type: Type
+)
+
+class Type(
+    @SerializedName("name")
+    val name: String
 )
 
