@@ -3,7 +3,7 @@ package com.example.pokedex.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedex.data.PokeDexRepository
-import com.example.pokedex.network.model.PokemonList
+import com.example.pokedex.ui.model.PokemonUIModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,12 +19,11 @@ class HomeViewModel(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-
     fun fetchPokemonList() {
-        repository.fetchPokemonList()
+        repository.fetchPokemonList(20, 0)
             .map { result ->
                 result.onSuccess {
-                    return@map HomeUiState.Success(it)
+                    return@map HomeUiState.Success(it.list)
                 }
                 return@map HomeUiState.Error
             }
@@ -40,6 +39,6 @@ sealed interface HomeUiState {
     data object Error : HomeUiState
 
     data class Success(
-        val list: PokemonList,
+        val list: List<PokemonUIModel>,
     ) : HomeUiState
 }

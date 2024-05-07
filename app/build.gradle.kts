@@ -66,9 +66,11 @@ dependencies {
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
+    implementation(libs.koin.compose)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.logging.interceptor)
+    implementation(libs.coil)
 
     testImplementation(libs.junit)
 

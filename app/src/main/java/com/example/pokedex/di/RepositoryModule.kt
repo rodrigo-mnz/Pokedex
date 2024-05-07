@@ -2,13 +2,18 @@ package com.example.pokedex.di
 
 import com.example.pokedex.data.DefaultPokeDexRepository
 import com.example.pokedex.data.PokeDexRepository
-import com.example.pokedex.home.HomeViewModel
+import com.example.pokedex.network.DefaultLocalDataSource
+import com.example.pokedex.network.LocalDataSource
 import com.example.pokedex.network.PokeDexService
 import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.get
 
-fun provideRepository(service: PokeDexService): PokeDexRepository = DefaultPokeDexRepository(service)
+fun provideRepository(
+    service: PokeDexService,
+    localDataSource: LocalDataSource
+): PokeDexRepository = DefaultPokeDexRepository(service, localDataSource)
+
+fun provideLocalDataSource() = DefaultLocalDataSource
 
 val repositoryModule = module {
-    single { provideRepository(get()) }
+    single { provideRepository(get(), provideLocalDataSource()) }
 }

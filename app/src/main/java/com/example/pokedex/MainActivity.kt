@@ -27,43 +27,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
+        enableEdgeToEdge()
         setContent {
             PokedexTheme {
                 PokeDexApp()
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.fetchPokemonList()
-    }
 }
 
-@Composable
-fun Greeting(viewModel: HomeViewModel, modifier: Modifier) {
-    val homeUiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    when (homeUiState) {
-        is HomeUiState.Error -> {
-            Text(text = "Error")
-        }
-
-        is HomeUiState.Loading -> {
-            Text(text = "Loading")
-        }
-
-        is HomeUiState.Success -> {
-            Column {
-                (homeUiState as HomeUiState.Success).list.results.forEach {
-                    Text(text = it.name)
-                }
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
