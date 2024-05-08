@@ -1,4 +1,4 @@
-package com.example.pokedex.home
+package com.example.pokedex.feature.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,31 +26,33 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.pokedex.R
 import com.example.pokedex.extensions.findColorFromType
 import com.example.pokedex.ui.model.PokemonUIModel
+import com.example.pokedex.ui.theme.LightGray
 import org.koin.androidx.compose.koinViewModel
 
 // TODO: Previews
 @Composable
 internal fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    onPokemonSelected: (String) -> Unit
+    onPokemonSelected: (PokemonUIModel) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
     val lazyPagingItems: LazyPagingItems<PokemonUIModel> =
         viewModel.pokemonList.collectAsLazyPagingItems()
 
-    LaunchedEffect(key1 = true) {
-        viewModel.fetchFirstPage()
-    }
+    when (lazyPagingItems.loadState.refresh) {
+        is LoadState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+        }
 
-    when (uiState) {
-        is HomeUiState.Error -> {
+        is LoadState.Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 Text(
                     text = stringResource(id = R.string.generic_error),
@@ -60,13 +61,7 @@ internal fun HomeScreen(
             }
         }
 
-        is HomeUiState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-        }
-
-        is HomeUiState.Success -> {
+        is LoadState.NotLoading -> {
             HomeContent(lazyPagingItems, onPokemonSelected)
         }
     }
@@ -75,7 +70,7 @@ internal fun HomeScreen(
 @Composable
 private fun HomeContent(
     lazyPagingItems: LazyPagingItems<PokemonUIModel>,
-    onPokemonSelected: (String) -> Unit
+    onPokemonSelected: (PokemonUIModel) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         LazyVerticalGrid(
@@ -90,12 +85,12 @@ private fun HomeContent(
 
                 Column(
                     modifier = Modifier.clickable {
-                        onPokemonSelected.invoke(pokemon.name)
+                        onPokemonSelected.invoke(pokemon)
                     }
                 ) {
                     Box(
                         modifier = Modifier.background(
-                            color = com.example.pokedex.ui.theme.LightGray,
+                            color = LightGray,
                             shape = RoundedCornerShape(8.dp)
                         )
                     ) {

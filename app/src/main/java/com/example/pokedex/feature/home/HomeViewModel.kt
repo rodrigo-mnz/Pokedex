@@ -1,4 +1,4 @@
-package com.example.pokedex.home
+package com.example.pokedex.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 
-
 class HomeViewModel(
     private val repository: PokeDexRepository,
     private val pokemonPagingSource: PokemonPagingSource
@@ -27,7 +26,7 @@ class HomeViewModel(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     fun fetchFirstPage() {
-        repository.fetchPokemonList(20, 0)
+        repository.fetchPokemonList(50, 0)
             .map { result ->
                 result.onSuccess {
                     return@map HomeUiState.Success
@@ -40,8 +39,8 @@ class HomeViewModel(
 
     val pokemonList: Flow<PagingData<PokemonUIModel>> = Pager(
         config = PagingConfig(
-            pageSize = 20,
-            enablePlaceholders = false
+            pageSize = 50,
+            enablePlaceholders = true
         ),
         pagingSourceFactory = { pokemonPagingSource }
     ).flow
@@ -52,7 +51,6 @@ class HomeViewModel(
                 _uiState.value = HomeUiState.Error
             }
         }
-
 }
 
 sealed interface HomeUiState {

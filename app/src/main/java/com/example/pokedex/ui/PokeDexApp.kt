@@ -1,6 +1,8 @@
 package com.example.pokedex.ui
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -22,25 +24,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.intl.Locale
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pokedex.R
-import com.example.pokedex.home.HomeScreen
+import com.example.pokedex.feature.detail.DetailScreen
+import com.example.pokedex.feature.home.HomeScreen
+import com.example.pokedex.ui.model.PokemonUIModel
 
 @Composable
 fun PokeDexApp(
     navController: NavHostController = rememberNavController()
 ) {
+    var currentPokemon: PokemonUIModel? by remember { mutableStateOf(null) }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = PokeDexScreen.valueOf(
         backStackEntry?.destination?.route ?: PokeDexScreen.Home.name
     )
-    var currentPokemon: String by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -70,7 +72,9 @@ fun PokeDexApp(
                 )
             }
             composable(route = PokeDexScreen.Detail.name) {
-                Text(text = "Detail")
+                currentPokemon?.let {
+                    DetailScreen(currentPokemon = it)
+                }
             }
         }
     }
@@ -80,7 +84,7 @@ fun PokeDexApp(
 @Composable
 fun PokeDexAppBar(
     currentScreen: PokeDexScreen,
-    currentPokemon: String,
+    currentPokemon: PokemonUIModel?,
     canNavigateBack: Boolean,
     navigateUp: () -> Boolean,
     modifier: Modifier = Modifier,
@@ -88,7 +92,7 @@ fun PokeDexAppBar(
     TopAppBar(
         title = {
             if (currentScreen == PokeDexScreen.Detail) {
-                Text(currentPokemon.capitalize(Locale.current))
+                Text(currentPokemon?.name ?: "")
             } else {
                 Text(stringResource(currentScreen.title))
             }

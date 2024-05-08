@@ -2,4 +2,8 @@
     <string name="app_name">PokeDex</string>
     <string name="detail">Detail</string>
     <string name="generic_error">Error, something went wrong.</string>
+    <string name="type">Type</string>
+    <string name="stats">Stats</string>
+    <string name="height">Height: %s</string>
+    <string name="weight">Weight: %s</string>
 </resources>
