@@ -34,6 +34,7 @@ import com.example.pokedex.feature.detail.DetailScreen
 import com.example.pokedex.feature.home.HomeScreen
 import com.example.pokedex.ui.model.PokemonUIModel
 
+// TODO: End-to-end instrumented tests
 @Composable
 fun PokeDexApp(
     navController: NavHostController = rememberNavController()
