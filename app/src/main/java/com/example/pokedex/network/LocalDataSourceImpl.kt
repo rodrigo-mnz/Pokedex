@@ -7,7 +7,7 @@ import com.example.pokedex.network.model.PokemonList
 import com.google.gson.Gson
 
 
-object DefaultLocalDataSource : LocalDataSource {
+object LocalDataSourceImpl : LocalDataSource {
 
     private lateinit var prefs: SharedPreferences
 

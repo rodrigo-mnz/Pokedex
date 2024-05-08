@@ -1,23 +1,25 @@
 package com.example.pokedex.di
 
-import com.example.pokedex.data.DefaultPokeDexRepository
+import androidx.paging.PagingSource
 import com.example.pokedex.data.PokeDexRepository
+import com.example.pokedex.data.PokeDexRepositoryImpl
 import com.example.pokedex.data.PokemonPagingSource
-import com.example.pokedex.network.DefaultLocalDataSource
 import com.example.pokedex.network.LocalDataSource
+import com.example.pokedex.network.LocalDataSourceImpl
 import com.example.pokedex.network.PokeDexService
+import com.example.pokedex.ui.model.PokemonUIModel
 import org.koin.dsl.module
 
 fun provideRepository(
     service: PokeDexService,
     localDataSource: LocalDataSource
-): PokeDexRepository = DefaultPokeDexRepository(service, localDataSource)
+): PokeDexRepository = PokeDexRepositoryImpl(service, localDataSource)
 
 fun providePagingSource(
     repository: PokeDexRepository
-): PokemonPagingSource = PokemonPagingSource(repository)
+): PagingSource<Int, PokemonUIModel> = PokemonPagingSource(repository)
 
-fun provideLocalDataSource() = DefaultLocalDataSource
+fun provideLocalDataSource() = LocalDataSourceImpl
 
 val repositoryModule = module {
     single { provideRepository(get(), provideLocalDataSource()) }

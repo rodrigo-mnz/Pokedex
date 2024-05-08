@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class PokemonList(
     @SerializedName("count")
     val count: Int,
-    @SerializedName( "next")
+    @SerializedName("next")
     val next: String,
     @SerializedName("previous")
     val previous: String,
@@ -19,3 +19,10 @@ data class Pokemon(
     @SerializedName("url")
     val url: String
 )
+
+fun Pokemon.extractId() =
+    if (url.isEmpty() || !url.endsWith("/")) {
+        throw IllegalArgumentException("Invalid URL: $url")
+    } else {
+        url.substring(0, url.length - 1).substringAfterLast("/").toInt()
+    }
