@@ -33,6 +33,7 @@ Basic cache with shared preferences: As we need to fetch Pokemon details for eac
 * Build compose components for reusability.
 * Improve instrumented tests, also create End-to-end UI tests (With screenshots maybe).
 * Improve navigation.
+* Code coverage.
 * Wishlist.
 * CI/CD.
 * Pokemon search.
